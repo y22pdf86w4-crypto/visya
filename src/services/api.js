@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/dualforce",
+  baseURL: "http://172.18.4.12/api/dualforce",
 });
 
 api.interceptors.request.use((config) => {
