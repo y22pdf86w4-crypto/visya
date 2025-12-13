@@ -11,14 +11,6 @@ export default function Menu() {
   const [dashboards, setDashboards] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // DEFINIÇÃO DE PERMISSÕES POR ROLE
-  const permissoes = {
-    admin: ["dualforce", "relatorios", "integraccoes", "usuarios"],
-    gestor: ["dualforce", "relatorios"],
-    vendedor: ["dualforce"],
-  };
-
-  // BASE COMPLETA DE DASHBOARDS DISPONÍVEIS
   const todosOsDashboards = [
     {
       id: 1,
@@ -74,7 +66,6 @@ export default function Menu() {
     },
   ];
 
-  // FILTRAR E CARREGAR DASHBOARDS POR PERMISSÃO
   useEffect(() => {
     setLoading(true);
     
@@ -89,22 +80,6 @@ export default function Menu() {
     return () => clearTimeout(timer);
   }, [userRole]);
 
-  // Fechar dropdown ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        profileOpen &&
-        !e.target.closest(".profile-dropdown") &&
-        !e.target.closest(".btn-icon")
-      ) {
-        setProfileOpen(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [profileOpen]);
-
   function handleLogout() {
     if (confirm("Tem certeza que deseja sair?")) {
       localStorage.removeItem("tokendualforce");
@@ -118,7 +93,6 @@ export default function Menu() {
     navigate(dashboard.rota);
   }
 
-  // Obter cor baseada no role
   function getRoleColor() {
     const colors = {
       admin: "#FF6B6B",
@@ -130,7 +104,6 @@ export default function Menu() {
 
   return (
     <div className="home-page">
-      {/* HEADER */}
       <header className="header">
         <div className="header-content">
           <div className="logo-section">
@@ -187,7 +160,6 @@ export default function Menu() {
         </div>
       </header>
 
-      {/* PROFILE DROPDOWN */}
       {profileOpen && (
         <div className="profile-dropdown active">
           <div className="dropdown-header">
@@ -222,7 +194,6 @@ export default function Menu() {
         </div>
       )}
 
-      {/* HERO SECTION */}
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -252,7 +223,6 @@ export default function Menu() {
         </div>
       </section>
 
-      {/* DASHBOARDS SECTION */}
       <section className="dashboards-section">
         <div style={{ marginBottom: "24px" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "8px" }}>
@@ -284,7 +254,6 @@ export default function Menu() {
               <div
                 key={dashboard.id}
                 className="dashboard-card"
-                onClick={() => handleOpenDashboard(dashboard)}
                 style={{ cursor: "pointer", transition: "transform 0.3s ease, box-shadow 0.3s ease" }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-8px)";
@@ -368,10 +337,7 @@ export default function Menu() {
                       cursor: "pointer",
                       transition: "background-color 0.3s ease",
                     }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenDashboard(dashboard);
-                    }}
+                    onClick={() => handleOpenDashboard(dashboard)}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.opacity = "0.9";
                     }}
@@ -401,7 +367,6 @@ export default function Menu() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="footer" style={{ marginTop: "60px", textAlign: "center", padding: "24px", color: "#999", borderTop: "1px solid #eee" }}>
         <p>© 2025 Visya. Todos os direitos reservados.</p>
       </footer>
