@@ -12,217 +12,130 @@ import {
   UserX,
 } from "lucide-react";
 
-
 export function AlertCard({ icon: Icon, titulo, valor, status, mensagem, cor, tipo, isCritico = false }) {
   const getCoreColor = (cor) => {
     const cores = {
-      verde: "#10b981",
-      vermelho: "#ef4444",
-      amarelo: "#f59e0b",
-      azul: "#3b82f6",
-      roxo: "#8b5cf6",
-      ciano: "#06b6d4",
+      verde: "#10b981", vermelho: "#ef4444", amarelo: "#f59e0b",
+      azul: "#3b82f6", roxo: "#8b5cf6", ciano: "#06b6d4",
     };
     return cores[cor] || cor;
   };
 
-
   const getBackgroundColor = (cor) => {
     const fundos = {
-      verde: "rgba(16, 185, 129, 0.08)",
-      vermelho: "rgba(239, 68, 68, 0.08)",
-      amarelo: "rgba(245, 158, 11, 0.08)",
-      azul: "rgba(59, 130, 246, 0.08)",
-      roxo: "rgba(139, 92, 246, 0.08)",
-      ciano: "rgba(6, 182, 212, 0.08)",
+      verde: "rgba(16, 185, 129, 0.08)", vermelho: "rgba(239, 68, 68, 0.08)",
+      amarelo: "rgba(245, 158, 11, 0.08)", azul: "rgba(59, 130, 246, 0.08)",
+      roxo: "rgba(139, 92, 246, 0.08)", ciano: "rgba(6, 182, 212, 0.08)",
     };
     return fundos[cor] || fundos.azul;
   };
 
+  const coreColor = getCoreColor(cor);
 
   return (
     <div
       className={`alert-card-carousel ${isCritico ? "critico" : ""}`}
       style={{
-        borderLeftColor: getCoreColor(cor),
+        borderLeft: `3px solid ${coreColor}`,
         backgroundColor: getBackgroundColor(cor),
       }}
     >
-      {/* ════════════════════════════════════════════════════════════════
-          SEÇÃO TOPO - ÍCONE + NOME + STATUS
-          ════════════════════════════════════════════════════════════════ */}
       <div className="alert-card-header-carousel">
-        <Icon size={24} style={{ color: getCoreColor(cor), flexShrink: 0 }} className="alert-card-icon-carousel" />
-        <div className="alert-card-title-section-carousel">
-          <span className="alert-card-title-carousel">{titulo}</span>
-          <span className="alert-card-status-carousel" style={{ color: getCoreColor(cor) }}>
-            {status}
-          </span>
+        <div className="alert-header-top">
+           <Icon size={18} style={{ color: coreColor }} className="alert-icon" />
+           <span className="alert-status" style={{ color: coreColor }}>{status}</span>
         </div>
+        <span className="alert-title">{titulo}</span>
       </div>
 
-
-      {/* ════════════════════════════════════════════════════════════════
-          SEÇÃO MEIO - VALOR GRANDE + MENSAGEM (PRINCIPAL)
-          ════════════════════════════════════════════════════════════════ */}
       <div className="alert-card-content-carousel">
-        <div className="alert-card-value-carousel">{valor}</div>
-        <p className="alert-card-mensagem-carousel">{mensagem}</p>
+        <div className="alert-value">{valor}</div>
+        <p className="alert-message">{mensagem}</p>
       </div>
 
-
-      {/* ════════════════════════════════════════════════════════════════
-          SEÇÃO CANTO INFERIOR DIREITO - BADGE PEQUENO (tipo)
-          ════════════════════════════════════════════════════════════════ */}
-      {tipo && <span className="alert-card-tipo-carousel">{tipo}</span>}
+      {tipo && <div className="alert-footer"><span className="alert-tipo">{tipo}</span></div>}
     </div>
   );
 }
 
-
-// ===================== COMPONENTE CAROUSEL PRINCIPAL =====================
 export function AlertCarousel({ todos24Cards, evolucaoSemanal, calcularCorSemana, calcularStatusSemana }) {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [progresso, setProgresso] = useState(0);
 
+  // Ajuste: Mostrar 3 cards por vez para caber melhor na tela sem scroll
+  const CARDS_POR_VEZ = 3; 
 
-  // Rotaciona a cada 30 segundos
   useEffect(() => {
+    if (!todos24Cards.length) return;
     const interval = setInterval(() => {
-      setIndiceAtual((prev) => (prev + 4) % todos24Cards.length);
+      setIndiceAtual((prev) => (prev + CARDS_POR_VEZ) % todos24Cards.length);
       setProgresso(0);
-    }, 30000);
-
+    }, 15000); // 15 segundos
 
     return () => clearInterval(interval);
   }, [todos24Cards.length]);
 
-
-  // Anima a barra de progresso
   useEffect(() => {
     const progressInterval = setInterval(() => {
-      setProgresso((prev) => (prev >= 100 ? 0 : prev + 100 / 150)); // 150 frames em 30s
-    }, 200);
-
-
+      setProgresso((prev) => (prev >= 100 ? 0 : prev + (100 / (15000 / 100)))); 
+    }, 100);
     return () => clearInterval(progressInterval);
   }, []);
 
+  const cardsAtuais = [];
+  for (let i = 0; i < CARDS_POR_VEZ; i++) {
+      cardsAtuais.push(todos24Cards[(indiceAtual + i) % todos24Cards.length]);
+  }
 
-  // Pegar 4 cards atuais
-  const cardsAtuais = [
-    todos24Cards[indiceAtual % todos24Cards.length],
-    todos24Cards[(indiceAtual + 1) % todos24Cards.length],
-    todos24Cards[(indiceAtual + 2) % todos24Cards.length],
-    todos24Cards[(indiceAtual + 3) % todos24Cards.length],
-  ];
-
-
-  const maxSemana = Math.max(...evolucaoSemanal.map((s) => s.total));
-
+  const maxSemana = evolucaoSemanal.length > 0 ? Math.max(...evolucaoSemanal.map((s) => s.total)) : 1;
 
   return (
     <div className="alert-carousel-container">
-      {/* GRID DE 4 CARDS HORIZONTAIS */}
+      <div className="carousel-header">
+         <span className="carousel-title">Destaques & Alertas</span>
+         <div className="carousel-timer">
+            <div className="timer-bar" style={{ width: `${progresso}%` }} />
+         </div>
+      </div>
+
       <div className="alert-carousel-grid">
-        {cardsAtuais.map((card, idx) => {
-          // Determinar se é crítico (baseado no status ou cor)
-          const isCritico = card.status?.includes("🔴") || card.cor === "vermelho";
-
-
-          return (
-            <div
-              key={idx}
-              className="alert-carousel-item"
-            >
-              <AlertCard
-                icon={card.icon}
-                titulo={card.titulo}
-                valor={card.valor}
-                status={card.status}
-                mensagem={card.mensagem}
-                cor={card.cor}
-                tipo={card.tipo}
-                isCritico={isCritico}
-              />
-            </div>
-          );
-        })}
-      </div>
-
-
-      {/* BARRA DE PROGRESSO E SEMANAS COMPACTA EM BAIXO */}
-      <div className="carousel-footer">
-        {/* BARRA DE PROGRESSO DO CARROSSEL */}
-        <div className="carousel-progress-section">
-          <span className="carousel-progress-label">Próximo em {30 - Math.floor(progresso / 3.33)}s</span>
-          <div className="carousel-progress-bar">
-            <div
-              className="carousel-progress-fill"
-              style={{ width: `${progresso}%` }}
+        {cardsAtuais.map((card, idx) => card && (
+            <AlertCard
+              key={`${indiceAtual}-${idx}`}
+              {...card}
+              isCritico={card.status?.includes("🔴") || card.cor === "vermelho"}
             />
-          </div>
-        </div>
-
-
-        {/* SEMANAS MINIATURIZADAS */}
-        {evolucaoSemanal && evolucaoSemanal.length > 0 && (
-          <div className="carousel-semanas-mini">
-            {evolucaoSemanal.map((item, idx) => {
-              const corFundo = calcularCorSemana(evolucaoSemanal, idx);
-
-
-              return (
-                <div
-                  key={idx}
-                  className="carousel-semana-mini"
-                  style={{
-                    borderLeftColor: corFundo,
-                    backgroundColor:
-                      corFundo === "#10b981"
-                        ? "rgba(16, 185, 129, 0.12)"
-                        : corFundo === "#f59e0b"
-                        ? "rgba(245, 158, 11, 0.12)"
-                        : "rgba(239, 68, 68, 0.12)",
-                  }}
-                >
-                  <div className="carousel-semana-header-mini">
-                    <span className="carousel-semana-label-mini">S{item.semana}</span>
-                    <span className="carousel-semana-status-mini" style={{ color: corFundo }}>
-                      {calcularStatusSemana(evolucaoSemanal.slice(0, idx + 1))}
-                    </span>
-                  </div>
-
-
-                  <div className="carousel-semana-valor-mini">{item.total}</div>
-
-
-                  <div className="carousel-semana-barra-mini">
-                    <div
-                      className="carousel-semana-progresso-mini"
-                      style={{
-                        width: `${(item.total / maxSemana) * 100}%`,
-                        backgroundColor: corFundo,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        ))}
       </div>
+
+      {evolucaoSemanal && evolucaoSemanal.length > 0 && (
+        <div className="carousel-mini-chart">
+           <span className="mini-chart-label">Tendência (4 Semanas)</span>
+           <div className="mini-chart-bars">
+              {evolucaoSemanal.map((item, idx) => {
+                 const cor = calcularCorSemana(evolucaoSemanal, idx);
+                 const altura = Math.max(15, (item.total / maxSemana) * 100); 
+                 return (
+                    <div key={idx} className="mini-bar-col" title={`Semana ${item.semana}: ${item.total}`}>
+                       <div className="mini-bar" style={{ height: `${altura}%`, backgroundColor: cor }}></div>
+                       <span className="mini-label">S{item.semana}</span>
+                    </div>
+                 )
+              })}
+           </div>
+        </div>
+      )}
     </div>
   );
 }
 
-
-// ===================== GERADORES DOS 8 CARDS GLOBAIS =====================
 export function gerarCardsGlobais(metricas, evolucaoSemanal) {
   const diasRestantes = 8;
   const dataAtual = new Date();
   const diaDoMes = dataAtual.getDate();
 
+  // CORREÇÃO: Garante que percVisitados seja um número válido para evitar "undefined%"
+  const percVisitados = Number(metricas.percVisitados ?? 0);
 
   const variacao30vs60 =
     metricas.total60d > 0
@@ -231,7 +144,6 @@ export function gerarCardsGlobais(metricas, evolucaoSemanal) {
           100).toFixed(1)
       : 0;
 
-
   let crescimentoSemanal = 0;
   if (evolucaoSemanal.length >= 2) {
     const ultima = evolucaoSemanal[evolucaoSemanal.length - 1].total;
@@ -239,11 +151,9 @@ export function gerarCardsGlobais(metricas, evolucaoSemanal) {
     crescimentoSemanal = penultima > 0 ? (((ultima - penultima) / penultima) * 100).toFixed(1) : 0;
   }
 
-
   const mediaDiariaAtual = metricas.totalAtividades / Math.max(diaDoMes, 1);
   const mediaDiariaGerada = (metricas.totalMeta / 22).toFixed(1);
   const diferenciaMedia = (mediaDiariaGerada - mediaDiariaAtual).toFixed(1);
-
 
   return [
     {
@@ -345,16 +255,17 @@ export function gerarCardsGlobais(metricas, evolucaoSemanal) {
       icon: UserCheck,
       titulo: "Clientes Visitados",
       valor: metricas.totalClientesVisitados,
+      // Usando a variável tratada percVisitados aqui
       status:
-        metricas.percVisitados >= 75
+        percVisitados >= 75
           ? "✅ EXCELENTE"
-          : metricas.percVisitados >= 60
+          : percVisitados >= 60
           ? "✅ BOM"
           : "⚠️ INSUFICIENTE",
-      mensagem: `${metricas.totalClientesVisitados} (${metricas.percVisitados}%) visitados. ${
-        metricas.percVisitados >= 75 ? "Excelente cobertura!" : "Aumente as visitas!"
+      mensagem: `${metricas.totalClientesVisitados} (${percVisitados.toFixed(1)}%) visitados. ${
+        percVisitados >= 75 ? "Excelente cobertura!" : "Aumente as visitas!"
       }`,
-      cor: metricas.percVisitados >= 75 ? "verde" : metricas.percVisitados >= 60 ? "ciano" : "amarelo",
+      cor: percVisitados >= 75 ? "verde" : percVisitados >= 60 ? "ciano" : "amarelo",
       tipo: "👥 CLIENTES",
     },
     {
@@ -383,21 +294,16 @@ export function gerarCardsGlobais(metricas, evolucaoSemanal) {
   ];
 }
 
-
-// ===================== GERADORES DOS 16 CARDS POR CONSULTOR =====================
 export function gerarCardsPorConsultor(dadosAPI) {
   if (!Array.isArray(dadosAPI) || dadosAPI.length === 0) return [];
 
-
   const cards = [];
   const ordenado = [...dadosAPI].sort((a, b) => (b.pct_meta_atividades_mes || 0) - (a.pct_meta_atividades_mes || 0));
-
 
   // TOP 3 MELHORES
   for (let i = 0; i < Math.min(3, ordenado.length); i++) {
     const consultor = ordenado[i];
     const emojis = ["🥇", "🥈", "🥉"];
-
 
     cards.push({
       icon: Award,
@@ -412,13 +318,11 @@ export function gerarCardsPorConsultor(dadosAPI) {
     });
   }
 
-
   // PIORES 3 - CRÍTICOS
   for (let i = 0; i < Math.min(3, ordenado.length); i++) {
     const consultor = ordenado[ordenado.length - 1 - i];
     if ((consultor.pct_meta_atividades_mes || 0) < 100) {
       const faltam = Math.max(0, (consultor.meta_atividades_mes || 0) - (consultor.qtde_atividades_mes || 0));
-
 
       cards.push({
         icon: UserX,
@@ -432,16 +336,13 @@ export function gerarCardsPorConsultor(dadosAPI) {
     }
   }
 
-
   // TOP 3 CARTEIRA FORTE
   const topCarteira = [...ordenado]
     .filter((c) => c.qtde_clientes_carteira > 0)
     .sort((a, b) => (b.qtde_clientes_carteira || 0) - (a.qtde_clientes_carteira || 0));
 
-
   for (let i = 0; i < Math.min(3, topCarteira.length); i++) {
     const consultor = topCarteira[i];
-
 
     cards.push({
       icon: UserCheck,
@@ -458,17 +359,14 @@ export function gerarCardsPorConsultor(dadosAPI) {
     });
   }
 
-
   // TOP 3 COM MAIOR RISCO
   const maiorRisco = [...ordenado]
     .filter((c) => c.qtde_clientes_carteira > 0)
     .sort((a, b) => (b.qtde_clientes_risco || 0) / (b.qtde_clientes_carteira || 1) - (a.qtde_clientes_risco || 0) / (a.qtde_clientes_carteira || 1));
 
-
   for (let i = 0; i < Math.min(3, maiorRisco.length); i++) {
     const consultor = maiorRisco[i];
     const percRisco = (((consultor.qtde_clientes_risco || 0) / (consultor.qtde_clientes_carteira || 1)) * 100).toFixed(1);
-
 
     cards.push({
       icon: AlertTriangle,
@@ -483,12 +381,9 @@ export function gerarCardsPorConsultor(dadosAPI) {
     });
   }
 
-
   return cards;
 }
 
-
-// ===== EXPORTAR FUNÇÃO UNIFICADA =====
 export function gerarTodos24Cards(metricas, evolucaoSemanal, dadosAPI) {
   const globais = gerarCardsGlobais(metricas, evolucaoSemanal);
   const porConsultor = gerarCardsPorConsultor(dadosAPI);
