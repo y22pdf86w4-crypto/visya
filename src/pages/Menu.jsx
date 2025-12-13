@@ -1,7 +1,10 @@
+// src/pages/Menu.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Bell, Lock } from "lucide-react";
 import "../styles/menu.css";
+import visyaLogo from "../assets/logovisya.png";
+import dualforceLogo from "../assets/logo-dualforce.png";
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -15,7 +18,8 @@ export default function Menu() {
     {
       id: 1,
       title: "DualForce",
-      description: "Análise completa de atividades, prospecção e performance de vendedores. Acesso ao painel principal com todas as métricas e KPIs.",
+      description:
+        "Análise completa de atividades, prospecção e performance de vendedores em tempo real.",
       icon: "📊",
       category: "Principal",
       records: "454",
@@ -25,58 +29,18 @@ export default function Menu() {
       requiredRole: ["admin", "gestor", "vendedor"],
       rota: "/dualforce/1",
     },
-    {
-      id: 2,
-      title: "Relatórios",
-      description: "Relatórios detalhados de vendas, prospecção e funil de conversão com análise temporal.",
-      icon: "📈",
-      category: "Análise",
-      records: "892",
-      updated: "Ontem",
-      tags: ["Vendas", "Conversão", "Funil"],
-      chave: "relatorios",
-      requiredRole: ["admin", "gestor"],
-      rota: "/relatorios/2",
-    },
-    {
-      id: 3,
-      title: "Integrações",
-      description: "Gerenciamento de integrações com sistemas externos, APIs e webhooks configurados.",
-      icon: "🔗",
-      category: "Configuração",
-      records: "12",
-      updated: "Semana passada",
-      tags: ["APIs", "Webhooks", "Sincronização"],
-      chave: "integraccoes",
-      requiredRole: ["admin"],
-      rota: "/integraccoes/3",
-    },
-    {
-      id: 4,
-      title: "Gerenciamento de Usuários",
-      description: "Controle completo de usuários, roles, permissões e acessos do sistema.",
-      icon: "👥",
-      category: "Administração",
-      records: "28",
-      updated: "Hoje",
-      tags: ["Permissões", "Roles", "Acesso"],
-      chave: "usuarios",
-      requiredRole: ["admin"],
-      rota: "/usuarios/4",
-    },
+    // outros dashboards podem continuar aqui se precisar no futuro
   ];
 
   useEffect(() => {
     setLoading(true);
-    
     const timer = setTimeout(() => {
       const dashboardsFiltrados = todosOsDashboards.filter((dash) =>
         dash.requiredRole.includes(userRole)
       );
       setDashboards(dashboardsFiltrados);
       setLoading(false);
-    }, 500);
-
+    }, 400);
     return () => clearTimeout(timer);
   }, [userRole]);
 
@@ -97,50 +61,62 @@ export default function Menu() {
     const colors = {
       admin: "#FF6B6B",
       gestor: "#4ECDC4",
-      vendedor: "#95E1D3",
+      vendedor: "#22c55e",
     };
-    return colors[userRole] || "#95E1D3";
+    return colors[userRole] || "#22c55e";
+  }
+
+  function getRoleLabel() {
+    if (userRole === "admin") return "Administrador";
+    if (userRole === "gestor") return "Gestor";
+    return "Vendedor";
   }
 
   return (
     <div className="home-page">
+      {/* HEADER */}
       <header className="header">
         <div className="header-content">
+          {/* Logo Visya */}
           <div className="logo-section">
-            <div className="logo-icon">V</div>
-            <span className="logo-text">Visya</span>
+            <img
+              src={visyaLogo}
+              alt="Visya"
+              className="logo-visya-img"
+            />
+            <div className="logo-text-block">
+              <span className="logo-text-main">Visya</span>
+              <span className="logo-text-sub">Painel de Dashboards</span>
+            </div>
           </div>
 
+          {/* Navegação simplificada */}
           <nav className="nav-menu">
-            <a href="#" className="nav-link active">
-              Início
-            </a>
-            <a href="#" className="nav-link">
-              Dashboards
-            </a>
-            <a href="#" className="nav-link">
-              Relatórios
-            </a>
-            <a href="#" className="nav-link">
-              Integrações
-            </a>
+            <span className="nav-link active">Dashboards</span>
           </nav>
         </div>
 
         <div className="header-actions">
-          <button className="btn-icon">
+          <button className="btn-icon" title="Notificações">
             <Bell size={18} />
             <span className="notification-badge">3</span>
           </button>
 
+          {/* Bloco usuário / função */}
           <div className="user-profile-header">
-            <div className="avatar-small" style={{ backgroundColor: getRoleColor() }}>
+            <div
+              className="avatar-small"
+              style={{ backgroundColor: getRoleColor() }}
+            >
               {usuario.charAt(0).toUpperCase()}
             </div>
             <div className="user-info-small">
               <div className="user-name-small">{usuario}</div>
-              <div className="user-email-small" style={{ fontSize: "11px", color: getRoleColor() }}>
-                {userRole.toUpperCase()}
+              <div
+                className="user-role-pill"
+                style={{ backgroundColor: getRoleColor() }}
+              >
+                {getRoleLabel().toUpperCase()}
               </div>
             </div>
           </div>
@@ -160,22 +136,16 @@ export default function Menu() {
         </div>
       </header>
 
+      {/* DROPDOWN PERFIL */}
       {profileOpen && (
         <div className="profile-dropdown active">
           <div className="dropdown-header">
             <span className="user-name">{usuario}</span>
             <span
-              className="user-email"
-              style={{
-                fontSize: "12px",
-                backgroundColor: getRoleColor(),
-                color: "#fff",
-                padding: "4px 8px",
-                borderRadius: "4px",
-                display: "inline-block",
-              }}
+              className="user-email user-role-chip"
+              style={{ backgroundColor: getRoleColor() }}
             >
-              {userRole.toUpperCase()}
+              {getRoleLabel()}
             </span>
           </div>
           <a href="#" className="dropdown-item">
@@ -187,137 +157,96 @@ export default function Menu() {
           <a href="#" className="dropdown-item">
             ❓ Ajuda
           </a>
-          <hr style={{ margin: "8px 0", border: "none", borderTop: "1px solid #eee" }} />
-          <a href="#" className="dropdown-item logout" onClick={handleLogout}>
+          <hr className="dropdown-separator" />
+          <a
+            href="#"
+            className="dropdown-item logout"
+            onClick={handleLogout}
+          >
             🚪 Sair
           </a>
         </div>
       )}
 
+      {/* HERO MAIS ENXUTO */}
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
             Bem-vindo, <span className="gradient-text">{usuario}</span>
           </h1>
           <p className="hero-subtitle">
-            Monitore em tempo real todos os seus dashboards, relatórios e métricas em um único lugar seguro e intuitivo.
+            Acesse seus dashboards e métricas em um único lugar intuitivo.
           </p>
-          <div style={{ marginTop: "16px", fontSize: "14px", color: "#666" }}>
-            <strong>Perfil:</strong>{" "}
-            <span
-              style={{
-                backgroundColor: getRoleColor(),
-                color: "#fff",
-                padding: "4px 12px",
-                borderRadius: "20px",
-                fontWeight: "600",
-              }}
-            >
-              {userRole === "admin"
-                ? "Administrador"
-                : userRole === "gestor"
-                ? "Gestor"
-                : "Vendedor"}
-            </span>
-          </div>
         </div>
       </section>
 
+      {/* DASHBOARDS */}
       <section className="dashboards-section">
-        <div style={{ marginBottom: "24px" }}>
-          <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "8px" }}>
-            Meus Dashboards
-          </h2>
-          <p style={{ color: "#666", fontSize: "14px" }}>
-            Você tem acesso a {dashboards.length} dashboard{dashboards.length !== 1 ? "s" : ""}
+        <div className="dashboards-header">
+          <h2>Meus Dashboards</h2>
+          <p>
+            Você tem acesso a {dashboards.length} dashboard
+            {dashboards.length !== 1 ? "s" : ""}.
           </p>
         </div>
 
         <div className="dashboards-grid">
           {loading ? (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px" }}>
-              <div
-                style={{
-                  display: "inline-block",
-                  width: "40px",
-                  height: "40px",
-                  border: "4px solid #f0f0f0",
-                  borderTop: "4px solid #4ECDC4",
-                  borderRadius: "50%",
-                  animation: "spin 1s linear infinite",
-                }}
-              />
-              <p style={{ marginTop: "16px", color: "#666" }}>Carregando dashboards...</p>
+            <div className="dashboards-loading">
+              <div className="spinner" />
+              <p>Carregando dashboards...</p>
             </div>
           ) : dashboards.length > 0 ? (
             dashboards.map((dashboard) => (
               <div
                 key={dashboard.id}
                 className="dashboard-card"
-                style={{ cursor: "pointer", transition: "transform 0.3s ease, box-shadow 0.3s ease" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow = "0 12px 24px rgba(0, 0, 0, 0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)";
-                }}
+                onClick={() => handleOpenDashboard(dashboard)}
               >
-                <div className="card-icon" style={{ fontSize: "48px", marginBottom: "12px" }}>
-                  {dashboard.icon}
+                {/* Logo DualForce no lugar do emoji */}
+                <div className="card-icon">
+                  {dashboard.chave === "dualforce" ? (
+                    <img
+                      src={dualforceLogo}
+                      alt="DualForce"
+                      className="logo-dualforce-img"
+                    />
+                  ) : (
+                    <span className="card-icon-emoji">
+                      {dashboard.icon}
+                    </span>
+                  )}
                 </div>
 
-                <div className="card-header" style={{ marginBottom: "12px" }}>
-                  <h3 className="card-title" style={{ marginBottom: "4px" }}>
-                    {dashboard.title}
-                  </h3>
-                  <span
-                    className="card-category"
-                    style={{
-                      backgroundColor: getRoleColor(),
-                      color: "#fff",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                      fontWeight: "600",
-                    }}
-                  >
+                <div className="card-header">
+                  <h3 className="card-title">{dashboard.title}</h3>
+                  <span className="card-category">
                     {dashboard.category}
                   </span>
                 </div>
 
-                <p className="card-description" style={{ marginBottom: "16px", minHeight: "48px" }}>
+                <p className="card-description">
                   {dashboard.description}
                 </p>
 
-                <div className="card-meta" style={{ marginBottom: "12px" }}>
+                <div className="card-meta">
                   <div className="meta-item">
                     <span className="meta-label">Registros</span>
-                    <span className="meta-value">{dashboard.records}</span>
+                    <span className="meta-value">
+                      {dashboard.records}
+                    </span>
                   </div>
                   <div className="meta-item">
                     <span className="meta-label">Atualização</span>
-                    <span className="meta-value">{dashboard.updated}</span>
+                    <span className="meta-value">
+                      {dashboard.updated}
+                    </span>
                   </div>
                 </div>
 
-                <div className="card-tags" style={{ marginBottom: "16px" }}>
+                <div className="card-tags">
                   {dashboard.tags?.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="tag"
-                      style={{
-                        backgroundColor: "#f0f0f0",
-                        color: "#333",
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        fontSize: "12px",
-                        marginRight: "4px",
-                        marginBottom: "4px",
-                        display: "inline-block",
-                      }}
-                    >
+                    <span key={idx} className="tag">
                       {tag}
                     </span>
                   ))}
@@ -326,23 +255,10 @@ export default function Menu() {
                 <div className="card-actions">
                   <button
                     className="btn btn-primary"
-                    style={{
-                      flex: 1,
-                      padding: "12px 16px",
-                      backgroundColor: getRoleColor(),
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "6px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease",
-                    }}
-                    onClick={() => handleOpenDashboard(dashboard)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.opacity = "0.9";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.opacity = "1";
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenDashboard(dashboard);
                     }}
                   >
                     Abrir Dashboard
@@ -351,23 +267,20 @@ export default function Menu() {
               </div>
             ))
           ) : (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "60px 20px" }}>
-              <Lock size={64} style={{ marginBottom: "16px", opacity: 0.3 }} />
-              <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
-                Sem Acesso a Dashboards
-              </h3>
-              <p style={{ fontSize: "14px", color: "#666", marginBottom: "16px" }}>
-                Você não tem permissão para acessar nenhum dashboard no momento.
+            <div className="dashboards-empty">
+              <Lock size={64} />
+              <h3>Sem acesso a dashboards</h3>
+              <p>
+                Você não tem permissão para acessar nenhum dashboard no
+                momento.
               </p>
-              <p style={{ fontSize: "13px", color: "#999" }}>
-                Entre em contato com um administrador para solicitar acesso.
-              </p>
+              <p>Entre em contato com um administrador para solicitar acesso.</p>
             </div>
           )}
         </div>
       </section>
 
-      <footer className="footer" style={{ marginTop: "60px", textAlign: "center", padding: "24px", color: "#999", borderTop: "1px solid #eee" }}>
+      <footer className="footer">
         <p>© 2025 Visya. Todos os direitos reservados.</p>
       </footer>
     </div>

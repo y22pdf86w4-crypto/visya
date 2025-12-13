@@ -367,7 +367,10 @@ export default function DualForce() {
                     <span className="u-role">Conectado</span>
                 </div>
                 <button className="btn-settings" onClick={() => setProfileOpen(!profileOpen)}>⚙️</button>
-                <button className="btn-logout-mini" onClick={() => navigate("/")}><LogOut size={14}/> Sair</button>
+                <button className="btn-logout-mini" onClick={() => navigate("/menu")}>
+  <LogOut size={14}/> Voltar
+</button>
+
             </div>
         </div>
       </header>
