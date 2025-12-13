@@ -21,7 +21,7 @@ import logoImg from "../assets/logo-dualforce.png";
 
 export default function DualForce() {
   const navigate = useNavigate();
-  const usuario = localStorage.getItem("user-dualforce") || "Usuário";
+  const usuario = localStorage.getItem("userdualforce") || "Usuário";
   const [profileOpen, setProfileOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -145,7 +145,7 @@ export default function DualForce() {
   // ==================== EFEITOS ====================
   useEffect(() => {
     const carregarFiltros = async () => {
-        const token = localStorage.getItem("token-dualforce");
+        const token = localStorage.getItem("tokendualforce");
         if (!token) { navigate("/"); return; }
         try {
             const response = await api.get("/filtros");
@@ -190,7 +190,7 @@ export default function DualForce() {
 
   // ==================== CARREGAMENTO ====================
   async function carregarDados() {
-    const token = localStorage.getItem("token-dualforce");
+    const token = localStorage.getItem("tokendualforce");
     if (!token) { navigate("/"); return; }
 
     setLoading(true);
