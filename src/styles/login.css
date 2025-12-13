@@ -1,0 +1,420 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #000814;
+  color: #e5f4ff;
+  overflow: hidden;
+}
+
+/* ========== FUNDO COM AURORAS ========== */
+.login-page {
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #001220 0%, #000814 45%, #00040a 100%);
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+      ellipse at 10% 0%,
+      rgba(79, 209, 255, 0.18) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 80% -10%,
+      rgba(70, 214, 201, 0.18) 0%,
+      transparent 60%
+    );
+  animation: auroraFlow 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes auroraFlow {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-25px) scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+}
+
+.login-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 70% 80%,
+    rgba(0, 78, 146, 0.5) 0%,
+    transparent 60%
+  );
+  animation: deepGlow 14s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes deepGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+/* Estrelas */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: #e5f4ff;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: twinkleStar 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes twinkleStar {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ========== CONTAINER PRINCIPAL (2 COLUNAS) ========== */
+.login-container {
+  position: relative;
+  width: 90%;
+  max-width: 1100px;
+  min-height: 600px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  justify-items: center;
+  z-index: 10;
+}
+
+/* ========== COLUNA ESQUERDA: EXPLICATIVO ========== */
+.login-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-self: start;
+  padding-left: 40px;
+}
+
+/* Logo/Nome Visya */
+.visya-title {
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4fd1ff, #1d8fe3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+/* DualForce */
+.dualforce-title {
+  font-size: 20px;
+  color: #c9e4ff;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Texto explicativo */
+.login-description {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.8;
+  max-width: 380px;
+  margin: 0;
+}
+
+.login-description strong {
+  color: #4fd1ff;
+}
+
+/* Form dentro da coluna esquerda */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  margin-top: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 11px;
+  color: #88a7c8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.form-group input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(79, 133, 178, 0.5);
+  background: rgba(6, 24, 44, 0.85);
+  color: #e5f4ff;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.form-group input:focus {
+  border-color: #4fd1ff;
+  background: rgba(6, 24, 44, 0.98);
+  box-shadow: 0 0 20px rgba(79, 209, 255, 0.4);
+}
+
+.form-group input::placeholder {
+  color: #5a7a96;
+}
+
+button[type="submit"] {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1d8fe3, #004e92);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(29, 143, 227, 0.5);
+}
+
+button[type="submit"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(79, 209, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+button[type="submit"]:hover::before {
+  left: 100%;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 40px rgba(79, 209, 255, 0.6);
+  background: linear-gradient(135deg, #4fd1ff, #1d8fe3);
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== COLUNA DIREITA: ASTRONAUTA ========== */
+.login-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  justify-self: end;
+  padding-right: 40px;
+}
+
+.astronaut-container {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.astronaut-glow {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79, 209, 255, 0.55) 0%, transparent 70%);
+  animation: glowPulse 4.5s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.75;
+  }
+}
+
+/* SOMENTE O ASTRONAUTA FLUTUA E SE MEXE */
+.login-right img {
+  width: 240px;
+  animation: astronautFloat 11s ease-in-out infinite;
+  z-index: 5;
+  filter: drop-shadow(0 0 30px rgba(79, 209, 255, 0.9));
+}
+
+@keyframes astronautFloat {
+  0% {
+    transform: translateX(0) translateY(0) rotateZ(0deg);
+  }
+  25% {
+    transform: translateY(-30px) translateX(-15px) rotateZ(-8deg);
+  }
+  50% {
+    transform: translateY(20px) translateX(0) rotateZ(0deg);
+  }
+  75% {
+    transform: translateY(-25px) translateX(15px) rotateZ(8deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotateZ(0deg);
+  }
+}
+
+/* ========== RESPONSIVO ========== */
+@media (max-width: 1024px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 100%;
+  }
+
+  .login-left,
+  .login-right {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .login-right img {
+    width: 180px;
+  }
+
+  .astronaut-container {
+    width: 250px;
+    height: 250px;
+  }
+
+  .astronaut-glow {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .login-left {
+    padding-left: 0;
+  }
+
+  .login-right {
+    padding-right: 0;
+  }
+
+  .visya-title {
+    font-size: 24px;
+  }
+
+  .login-description {
+    font-size: 13px;
+  }
+
+  .login-form {
+    max-width: 100%;
+  }
+
+  .login-right img {
+    width: 150px;
+  }
+
+  .astronaut-container {
+    width: 200px;
+    height: 200px;
+  }
+}
