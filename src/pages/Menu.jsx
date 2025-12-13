@@ -11,13 +11,13 @@ export default function Menu() {
 
   useEffect(() => {
     // Fechar dropdown ao clicar fora
-    const handleClickOutside = (e) => {
+/*    const handleClickOutside = (e) => {
       if (!e.target.closest(".profile-dropdown") && !e.target.closest(".btn-icon")) {
         setProfileOpen(false);
       }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    }; */
+//     document.addEventListener("click", handleClickOutside);
+//     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   function handleLogout() {
