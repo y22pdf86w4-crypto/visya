@@ -6,8 +6,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   // ✅ CORREÇÃO OBRIGATÓRIA: Usar token-dualforce (com hífen)
-  const token = localStorage.getItem("token-dualforce"); 
-  if (token) {
+ const token = localStorage.getItem("tokendualforce");  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
