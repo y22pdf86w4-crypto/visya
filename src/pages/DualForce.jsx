@@ -783,7 +783,7 @@ export default function DualForce() {
                         dadosAPI.map((i, idx) => (
                           <tr key={idx}>
                             <td>{i.consultor}</td>
-                            <td>{i.qtde_atividades_mes}</td>
+                            <td>{i.qtde_atividades_total}</td>
                             <td>{i.meta_atividades_mes}</td>
                             <td>
                               {i.pct_meta_atividades_mes?.toFixed(1)}%
