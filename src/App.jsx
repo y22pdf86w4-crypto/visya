@@ -12,6 +12,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/dualforce/:dashboardId" element={<DualForce />} />
+        <Route path="/linhagro/:dashboardId" element={<DualForce />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

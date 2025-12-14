@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://172.18.4.12:3000/api/dualforce",
+  baseURL: "http://172.18.4.12:3001/api",
 });
 
 api.interceptors.request.use((config) => {
-  // ✅ CORREÇÃO OBRIGATÓRIA: Usar token-dualforce (com hífen)
- const token = localStorage.getItem("tokendualforce");  if (token) {
+  const token = localStorage.getItem("tokendualforce");
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

@@ -42,7 +42,7 @@ export default function Login() {
     }
 
     try {
-      const res = await api.post("/login", { usuario, senha });
+      const res = await api.post("/visya/login", { usuario, senha });
       const { token, usuario: userNome } = res.data;
 
       if (!token) {
@@ -73,9 +73,10 @@ export default function Login() {
           <h1 className="visya-title">Visya</h1>
 
           <p className="login-description">
-            <strong>Visya</strong>  é a plataforma que conecta análise avançada de dados à 
-             <strong> visão estratégica</strong> do seu negócio, transformando informação em decisões seguras e resultados consistentes."
-            
+            <strong>Visya</strong> é a plataforma que conecta análise avançada
+            de dados à <strong> visão estratégica</strong> do seu negócio,
+            transformando informação em decisões seguras e resultados
+            consistentes.
           </p>
 
           {erro && (
@@ -109,7 +110,9 @@ export default function Login() {
             </div>
 
             <button type="submit" disabled={loading}>
-              {loading ? "Entrando..." : (
+              {loading ? (
+                "Entrando..."
+              ) : (
                 <>
                   <LogIn size={18} />
                   <span>Entrar</span>
