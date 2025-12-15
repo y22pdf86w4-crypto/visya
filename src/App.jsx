@@ -3,16 +3,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
 import DualForce from "./pages/DualForce";
+import Linhagroat from "./pages/Linhagroat"; // <--- 1. IMPORTE O COMPONENTE NOVO
 
 export default function App() {
   return (
-    // Sem basename para Vercel / domínio raiz
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/menu" element={<Menu />} />
+        
+        {/* Rota do DualForce */}
         <Route path="/dualforce/:dashboardId" element={<DualForce />} />
-        <Route path="/linhagro/:dashboardId" element={<DualForce />} />
+        
+        {/* Rota do Linhagro - CORRIGIDA */}
+        <Route path="/linhagro/:dashboardId" element={<Linhagroat />} /> {/* <--- 2. USE O COMPONENTE CERTO AQUI */}
+        
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

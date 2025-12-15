@@ -5,6 +5,7 @@ import { LogOut, Bell, Lock } from "lucide-react";
 import "../styles/menu.css";
 import visyaLogo from "../assets/logovisya.png";
 import dualforceLogo from "../assets/logo-dualforce.png";
+import linhagroLogo from "../assets/logo-linhagro.png";
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -29,7 +30,20 @@ export default function Menu() {
       requiredRole: ["admin", "gestor", "vendedor"],
       rota: "/dualforce/1",
     },
-    // outros dashboards podem continuar aqui se precisar no futuro
+    {
+      id: 2,
+      title: "Linhagro",
+      description:
+        "Dashboard estratégico com análise de carteira, cobertura de clientes e performance de vendedores.",
+      icon: "🌾",
+      category: "Principal",
+      records: "327",
+      updated: "Hoje",
+      tags: ["Carteira", "Vendedores", "Cobertura"],
+      chave: "linhagro",
+      requiredRole: ["admin", "gestor", "vendedor"],
+      rota: "/linhagro/1",
+    },
   ];
 
   useEffect(() => {
@@ -70,6 +84,12 @@ export default function Menu() {
     if (userRole === "admin") return "Administrador";
     if (userRole === "gestor") return "Gestor";
     return "Vendedor";
+  }
+
+  function getDashboardLogo(chave) {
+    if (chave === "dualforce") return dualforceLogo;
+    if (chave === "linhagro") return linhagroLogo;
+    return null;
   }
 
   return (
@@ -203,13 +223,13 @@ export default function Menu() {
                 className="dashboard-card"
                 onClick={() => handleOpenDashboard(dashboard)}
               >
-                {/* Logo DualForce no lugar do emoji */}
+                {/* Logo do Dashboard - Dinâmica */}
                 <div className="card-icon">
-                  {dashboard.chave === "dualforce" ? (
+                  {getDashboardLogo(dashboard.chave) ? (
                     <img
-                      src={dualforceLogo}
-                      alt="DualForce"
-                      className="logo-dualforce-img"
+                      src={getDashboardLogo(dashboard.chave)}
+                      alt={dashboard.title}
+                      className="logo-dashboard-img"
                     />
                   ) : (
                     <span className="card-icon-emoji">
