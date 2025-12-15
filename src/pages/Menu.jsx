@@ -22,8 +22,8 @@ export default function Menu() {
       description:
         "Análise completa de atividades, prospecção e performance de vendedores em tempo real.",
       icon: "📊",
-      category: "Principal",
-      records: "454",
+      category: "Força Dupla - Agendas",
+      records: "Acesse para mais informações",
       updated: "Hoje",
       tags: ["Atividades", "Performance", "Vendedores"],
       chave: "dualforce",
@@ -36,8 +36,8 @@ export default function Menu() {
       description:
         "Dashboard estratégico com análise de carteira, cobertura de clientes e performance de vendedores.",
       icon: "🌾",
-      category: "Principal",
-      records: "327",
+      category: "Atividades Linhagro",
+      records: "Acesse para mais informações",
       updated: "Hoje",
       tags: ["Carteira", "Vendedores", "Cobertura"],
       chave: "linhagro",
