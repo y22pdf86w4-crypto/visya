@@ -83,7 +83,7 @@ export default function Menu() {
   function getRoleLabel() {
     if (userRole === "admin") return "Administrador";
     if (userRole === "gestor") return "Gestor";
-    return "Vendedor";
+    return "";
   }
 
   function getDashboardLogo(chave) {
