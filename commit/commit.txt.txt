@@ -1,0 +1,5 @@
+git push origin main
+git add .
+git commit -m "fix: Integração completa - resumo consolidado, filtros DualForce e KPIs corrigidos"
+git push origin main
+                                   
