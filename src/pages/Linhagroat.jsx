@@ -426,6 +426,7 @@ export default function Linhagroat() {
                 <AbaButton id="kpis" label="Dashboard" icon={TrendingUp} />
                 <AbaButton id="vendedores" label={`Vendedores (${dadosAPI.length})`} icon={Users} />
                 <AbaButton id="tipos" label={`Tipos (${tiposAtividade.length})`} icon={BarChart3} />
+                <AbaButton id="alertas" label="Alertas" icon={AlertCircle} />
               </div>
 
               {abaAtiva === "kpis" && (
