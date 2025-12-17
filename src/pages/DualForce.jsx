@@ -22,11 +22,15 @@ import logoImg from "../assets/logo-dualforce.png";
 export default function DualForce() {
   const navigate = useNavigate();
   
-  // Detectar se é DualForce ou Linhagro baseado na URL
+  // ✅ CORRIGIDO: Detectar tenant da URL
   const isDualForce = window.location.pathname.includes("/dualforce/");
   const apiPrefix = isDualForce ? "/dualforce" : "/linhagro";
+  const storagePrefix = isDualForce ? "dualforce" : "linhagro";
   
-  const usuario = localStorage.getItem("userdualforce") || "Usuário";
+  // ✅ CORRIGIDO: Usar prefix correto
+  const usuario = localStorage.getItem(`user${storagePrefix}`) || "Usuário";
+  const tokenKey = `token${storagePrefix}`;
+  
   const [profileOpen, setProfileOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -68,7 +72,7 @@ export default function DualForce() {
         percRestante60d: 0,
         totalClientes: 0,
         totalClientesRisco: 0,
-        totalClientesVisitados: 0,
+        totalClientesVisitado: 0,
         percRisco: 0,
         percVisitado: 0,
         totalMeta: 0,
@@ -107,7 +111,7 @@ export default function DualForce() {
       (acc, i) => acc + sanitizarValor(i.qtde_clientes_risco),
       0
     );
-    const totalClientesVisitados = totalClientes - totalClientesRisco;
+    const totalClientesVisitado = totalClientes - totalClientesRisco;
 
     const percRisco =
       totalClientes > 0
@@ -115,7 +119,7 @@ export default function DualForce() {
         : 0;
     const percVisitado =
       totalClientes > 0
-        ? ((totalClientesVisitados / totalClientes) * 100).toFixed(1)
+        ? ((totalClientesVisitado / totalClientes) * 100).toFixed(1)
         : 0;
 
     const totalMeta = dadosAPI.reduce(
@@ -135,7 +139,7 @@ export default function DualForce() {
       percRestante60d,
       totalClientes,
       totalClientesRisco,
-      totalClientesVisitados,
+      totalClientesVisitado,
       percRisco,
       percVisitado,
       totalMeta,
@@ -181,7 +185,7 @@ export default function DualForce() {
   // ==================== EFEITOS ====================
   useEffect(() => {
     const carregarFiltros = async () => {
-      const token = localStorage.getItem("tokendualforce");
+      const token = localStorage.getItem(tokenKey);
       if (!token) {
         navigate("/");
         return;
@@ -191,10 +195,11 @@ export default function DualForce() {
         if (response.data.sucesso) setFiltros(response.data);
       } catch (err) {
         console.error(`[ERRO] Carregando filtros de ${apiPrefix}:`, err);
+        setErro("Erro ao carregar filtros");
       }
     };
     carregarFiltros();
-  }, [navigate, apiPrefix]);
+  }, [navigate, apiPrefix, tokenKey]);
 
   useEffect(() => {
     if (filtros?.dataPadrao) {
@@ -204,7 +209,10 @@ export default function DualForce() {
   }, [filtros]);
 
   useEffect(() => {
-    if (dtInicio && dtFim) carregarDados();
+    // ✅ CORRIGIDO: Só carrega se datas estão preenchidas
+    if (dtInicio && dtFim) {
+      carregarDados();
+    }
   }, [dtInicio, dtFim, filtroConsultor, filtroStatus, filtroTipo]);
 
   useEffect(() => {
@@ -235,7 +243,7 @@ export default function DualForce() {
 
   // ==================== CARREGAMENTO ====================
   async function carregarDados() {
-    const token = localStorage.getItem("tokendualforce");
+    const token = localStorage.getItem(tokenKey);
     if (!token) {
       navigate("/");
       return;
@@ -245,41 +253,56 @@ export default function DualForce() {
     setErro("");
 
     try {
-      const params = new URLSearchParams({ dtInicio, dtFim });
+      const params = new URLSearchParams({ 
+        dtInicio, 
+        dtFim 
+      });
       if (filtroConsultor) params.append("nmVendedor", filtroConsultor);
       if (filtroStatus) params.append("status", filtroStatus);
       if (filtroTipo) params.append("tipoAtividade", filtroTipo);
 
-      const [resResumo, resHist, resTipos, resEvolucao] = await Promise.all([
-        api.get(`${apiPrefix}/resumo-geral?${params}`),
-        api.get(`${apiPrefix}/historico-global?${params}`),
-        api.get(`${apiPrefix}/distribuicao?${params}`),
-        api.get(`${apiPrefix}/evolucao?${params}`),
-      ]);
+      // ✅ CORRIGIDO: Tratamento individual de erros
+      try {
+        const resResumo = await api.get(`${apiPrefix}/resumo-geral?${params}`);
+        setDadosAPI(resResumo.data.sucesso ? resResumo.data.dados || [] : []);
+      } catch (err) {
+        console.error("[ERRO] Resumo Geral:", err);
+        setDadosAPI([]);
+      }
 
-      setDadosAPI(
-        resResumo.data.sucesso ? resResumo.data.dados || [] : []
-      );
-      setHistorico(resHist.data.sucesso ? resHist.data.dados || [] : []);
-      setTiposAtividade(
-        resTipos.data.sucesso ? resTipos.data.dados || [] : []
-      );
+      try {
+        const resHist = await api.get(`${apiPrefix}/historico-global?${params}`);
+        setHistorico(resHist.data.sucesso ? resHist.data.dados || [] : []);
+      } catch (err) {
+        console.error("[ERRO] Histórico Global:", err);
+        setHistorico([]);
+      }
 
-      if (
-        resEvolucao.data.sucesso &&
-        Array.isArray(resEvolucao.data.dados)
-      ) {
-        const semanas = {};
-        resEvolucao.data.dados.forEach((i) => {
-          if (!semanas[i.semana]) semanas[i.semana] = 0;
-          semanas[i.semana] += i.qtd;
-        });
-        const list = Object.entries(semanas)
-          .map(([s, t]) => ({ semana: parseInt(s), total: t }))
-          .sort((a, b) => a.semana - b.semana)
-          .slice(-4);
-        setEvolucaoSemanal(list);
-      } else {
+      try {
+        const resTipos = await api.get(`${apiPrefix}/distribuicao?${params}`);
+        setTiposAtividade(resTipos.data.sucesso ? resTipos.data.dados || [] : []);
+      } catch (err) {
+        console.error("[ERRO] Distribuição:", err);
+        setTiposAtividade([]);
+      }
+
+      try {
+        const resEvolucao = await api.get(`${apiPrefix}/evolucao?${params}&periodo=semana`);
+        if (resEvolucao.data.sucesso && Array.isArray(resEvolucao.data.dados)) {
+          // ✅ CORRIGIDO: Mantém TODOS os dados do período, não apenas últimos 4
+          const semanas = {};
+          resEvolucao.data.dados.forEach((i) => {
+            if (!semanas[i.semana]) semanas[i.semana] = { semana: i.semana, total: 0 };
+            semanas[i.semana].total += i.qtd;
+          });
+          const list = Object.values(semanas)
+            .sort((a, b) => a.semana - b.semana);
+          setEvolucaoSemanal(list);
+        } else {
+          setEvolucaoSemanal([]);
+        }
+      } catch (err) {
+        console.error("[ERRO] Evolução:", err);
         setEvolucaoSemanal([]);
       }
     } catch (err) {
@@ -293,7 +316,10 @@ export default function DualForce() {
   // ==================== GRÁFICOS ====================
   const histSeries = useMemo(
     () => [
-      { name: "Atividades", data: historico.map((h) => sanitizarValor(h.total)) },
+      { 
+        name: "Atividades", 
+        data: historico.map((h) => sanitizarValor(h.total)) 
+      },
     ],
     [historico]
   );
@@ -348,7 +374,10 @@ export default function DualForce() {
   );
 
   const tiposSeries = useMemo(
-    () => [{ name: "Qtd", data: tiposAtividade.map((t) => sanitizarValor(t.qtd)) }],
+    () => [{ 
+      name: "Qtd", 
+      data: tiposAtividade.map((t) => sanitizarValor(t.qtd)) 
+    }],
     [tiposAtividade]
   );
 
@@ -416,7 +445,7 @@ export default function DualForce() {
             className="logo-image"
             style={{ height: "40px", width: "auto", objectFit: "contain" }}
           />
-          <span className="page-title"></span>
+          <span className="page-title">{isDualForce ? "DualForce" : "Linhagro"}</span>
         </div>
 
         <div className="header-filters-row">
@@ -537,6 +566,12 @@ export default function DualForce() {
             <div className="spinner" />
             <p>Carregando...</p>
           </div>
+        ) : erro ? (
+          <div className="error-container">
+            <AlertCircle size={32} />
+            <p>{erro}</p>
+            <button onClick={carregarDados}>Tentar novamente</button>
+          </div>
         ) : (
           <div className="dualforce-grid">
             <div className="main-column">
@@ -602,7 +637,7 @@ export default function DualForce() {
                   <div className="kpi-content">
                     <span className="kpi-label">Visitados</span>
                     <div className="kpi-value">
-                      {metricas.totalClientesVisitados}
+                      {metricas.totalClientesVisitado}
                     </div>
                     <div className="kpi-meta">
                       Clientes com agenda realizada
@@ -647,7 +682,7 @@ export default function DualForce() {
                   >
                     <span>Cobertura</span>
                     <span>
-                      {metricas.totalClientesVisitados}/
+                      {metricas.totalClientesVisitado}/
                       {metricas.totalClientes} ({metricas.percVisitado}%)
                     </span>
                   </div>
@@ -670,7 +705,7 @@ export default function DualForce() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <span>Visitados: {metricas.totalClientesVisitados}</span>
+                    <span>Visitados: {metricas.totalClientesVisitado}</span>
                     <span>Risco: {metricas.totalClientesRisco}</span>
                   </div>
                 </div>
@@ -771,7 +806,7 @@ export default function DualForce() {
                   <table>
                     <thead>
                       <tr>
-                        <th>Consultor</th>
+                        <th>{isDualForce ? "Consultor" : "Vendedor"}</th>
                         <th>Ativ.</th>
                         <th>Meta</th>
                         <th>%</th>
@@ -782,11 +817,11 @@ export default function DualForce() {
                       {dadosAPI.length > 0 ? (
                         dadosAPI.map((i, idx) => (
                           <tr key={idx}>
-                            <td>{i.consultor}</td>
-                            <td>{i.qtde_atividades_total}</td>
+                            <td>{isDualForce ? i.consultor : i.nmVendedor}</td>
+                            <td>{i.qtde_atividades_total || i.qtde_atividades_mes}</td>
                             <td>{i.meta_atividades_mes}</td>
                             <td>
-                              {i.pct_meta_atividades_mes?.toFixed(1)}%
+                              {(i.pct_meta_atividades_mes || 0).toFixed(1)}%
                             </td>
                             <td>{i.qtde_clientes_risco}</td>
                           </tr>
