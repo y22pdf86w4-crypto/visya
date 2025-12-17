@@ -82,7 +82,7 @@ export default function DualForce() {
     }
 
     const totalAtividades = dadosAPI.reduce(
-      (acc, i) => acc + sanitizarValor(i.qtde_atividades_total),
+      (acc, i) => acc + sanitizarValor(i.qtde_atividades_mes),
       0
     );
     const total30d = dadosAPI.reduce(
@@ -818,7 +818,7 @@ export default function DualForce() {
                         dadosAPI.map((i, idx) => (
                           <tr key={idx}>
                             <td>{isDualForce ? i.consultor : i.nmVendedor}</td>
-                            <td>{i.qtde_atividades_total || i.qtde_atividades_mes}</td>
+                            <td>{i.qtde_atividades_mes}</td>
                             <td>{i.meta_atividades_mes}</td>
                             <td>
                               {(i.pct_meta_atividades_mes || 0).toFixed(1)}%
