@@ -42,7 +42,7 @@ export default function Login() {
     }
 
     try {
-      const res = await api.post("/visya/login", { usuario, senha });
+      const res = await api.post("/linhagro/login", { usuario, senha });
       const { token, usuario: userNome } = res.data;
 
       if (!token) {
