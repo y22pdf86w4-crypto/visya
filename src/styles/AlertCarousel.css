@@ -1,159 +1,269 @@
+/* ==========================================================================
+   AlertCarousel.css - Versão Final Compacta e Moderna
+   ========================================================================== */
+
 /* === CONTAINER PRINCIPAL (FULL HEIGHT) === */
 .alert-carousel-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #1e293b;
-  border-left: 1px solid #334155;
-  padding: 12px;
-  gap: 12px;
+  background-color: #0f172a; /* Dark Slate 900 */
+  border-left: 1px solid #1e293b;
+  padding: 10px; /* Padding compacto */
+  gap: 10px;
 }
 
-/* CABEÇALHO COM BARRA DE TEMPO */
+/* === CABEÇALHO COM BARRA DE TEMPO === */
 .carousel-header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex-shrink: 0;
+  margin-bottom: 4px;
 }
 
 .carousel-title {
-  font-size: 12px;
+  font-size: 11px; /* Fonte reduzida para elegância */
   font-weight: 700;
-  color: #e2e8f0;
+  color: #94a3b8;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1em;
 }
 
 .carousel-timer {
   height: 2px;
-  background-color: #334155;
-  border-radius: 2px;
+  background-color: #1e293b;
+  border-radius: 99px;
   overflow: hidden;
 }
 
 .timer-bar {
   height: 100%;
-  background-color: #3b82f6;
+  background-color: #3b82f6; /* Azul Primário */
   transition: width 0.1s linear;
 }
 
-/* GRID DE CARDS (FLEXÍVEL) */
+/* === GRID DE CARDS (FLEXÍVEL COM SCROLL) === */
 .alert-carousel-grid {
   flex: 1; /* Ocupa todo espaço disponível */
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  overflow: hidden; /* Nada de scroll aqui */
+  gap: 8px; /* Espaço menor entre cards */
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
-/* CARD INDIVIDUAL (COMPACTO) */
+/* Scrollbar Customizada Fina */
+.alert-carousel-grid::-webkit-scrollbar {
+    width: 4px;
+}
+.alert-carousel-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+.alert-carousel-grid::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+.alert-carousel-grid::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* === CARD DE ALERTA INDIVIDUAL (COMPACTO) === */
 .alert-card-carousel {
-  flex: 1; /* Todos os cards têm tamanho igual e esticam */
   display: flex;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  padding: 10px;
-  min-height: 0; /* Permite encolher */
-  transition: transform 0.2s;
-  justify-content: space-between;
+  gap: 8px; /* Espaçamento interno reduzido */
+  
+  background-color: #1e293b;
+  border-radius: 8px;
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  
+  /* Comportamento de tamanho */
+  flex-shrink: 0; /* Impede achatamento */
+  min-height: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .alert-card-carousel:hover {
   transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+/* Barra Lateral Colorida (Indicator) */
+.alert-card-carousel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #94a3b8; /* Cor default */
+}
+
+/* === HEADER DO CARD === */
 .alert-card-header-carousel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 28px;
+}
+
+/* Grupo Esquerdo (Títulos) */
+.alert-header-left {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
+  min-width: 0; /* Essencial para text-overflow funcionar */
 }
 
-.alert-header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.alert-status {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.alert-title {
-  font-size: 11px;
-  color: #94a3b8;
+.alert-title-main {
+  font-size: 13px; /* Reduzido de 15px */
   font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.alert-subtitle {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+/* Badge de Status (Direita) */
+.alert-status-badge {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid currentColor;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === CONTEÚDO DO CARD === */
 .alert-card-content-carousel {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
-  justify-content: center;
 }
 
 .alert-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
+  font-size: 22px; /* Valor numérico grande mas ajustado */
+  font-weight: 800;
+  color: #f1f5f9;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
 }
 
 .alert-message {
   font-size: 11px;
   color: #cbd5e1;
-  line-height: 1.3;
-  /* Limite de linhas para não estourar */
+  line-height: 1.35;
+  
+  /* Limita a 3 linhas com reticências */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+/* Footer do Card (Tag inferior) */
 .alert-footer {
   margin-top: 4px;
   display: flex;
   justify-content: flex-end;
 }
 
-.alert-tipo {
+.alert-tag {
   font-size: 9px;
-  background-color: rgba(0,0,0,0.2);
-  padding: 2px 6px;
-  border-radius: 4px;
   color: #94a3b8;
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* MINI GRÁFICO NO FINAL */
+/* === VARIAÇÕES DE COR E TEMA === */
+
+/* 1. CRÍTICO (Rosa/Neon) */
+.alert-card-carousel.critico {
+  background: linear-gradient(180deg, rgba(255, 11, 120, 0.1) 0%, #1e293b 100%);
+  border-color: rgba(255, 11, 120, 0.3);
+}
+.alert-card-carousel.critico::before { background-color: #ff0b78; }
+.alert-card-carousel.critico .alert-status-badge { color: #ff0b78; }
+.alert-card-carousel.critico .alert-value { 
+  color: #f1f5f9; 
+  text-shadow: 0 0 10px rgba(255, 11, 120, 0.4); 
+}
+
+/* 2. ATENÇÃO (Laranja/Amarelo) */
+.alert-card-carousel.atencao {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, #1e293b 100%);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.alert-card-carousel.atencao::before { background-color: #f59e0b; }
+.alert-card-carousel.atencao .alert-status-badge { color: #f59e0b; }
+
+/* 3. SUCESSO (Verde) */
+.alert-card-carousel.sucesso {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, #1e293b 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+.alert-card-carousel.sucesso::before { background-color: #10b981; }
+.alert-card-carousel.sucesso .alert-status-badge { color: #10b981; }
+
+/* === MINI GRÁFICO DE TENDÊNCIA === */
 .carousel-mini-chart {
-  flex-shrink: 0;
-  background-color: rgba(0,0,0,0.2);
+  margin-top: auto; /* Empurra para o rodapé */
+  background-color: #0f172a;
   border-radius: 6px;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  height: 80px; /* Altura fixa pequena */
+  height: 90px; /* Altura fixa para estabilidade */
+  border: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
 }
 
 .mini-chart-label {
   font-size: 10px;
-  color: #64748b;
+  color: #94a3b8;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
 .mini-chart-bars {
+  flex: 1;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end; /* Barras crescem de baixo para cima */
   justify-content: space-between;
-  height: 100%;
   gap: 4px;
+  padding-bottom: 2px;
 }
 
 .mini-bar-col {
@@ -161,47 +271,57 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
   justify-content: flex-end;
-  gap: 2px;
+  height: 100%;
+  gap: 4px;
+  cursor: help; /* Indica tooltip nativo */
+}
+
+.mini-bar-col:hover .mini-bar {
+  opacity: 0.8;
 }
 
 .mini-bar {
   width: 100%;
+  background-color: #334155;
   border-radius: 2px;
-  transition: height 0.5s ease;
-  min-height: 4px;
+  min-height: 2px; /* Garante visibilidade mesmo com valor 0 */
+  transition: height 0.3s ease;
 }
+
+/* Cores das Barras (Auxiliares) */
+.mini-bar.red { background-color: #ff0b78; }
+.mini-bar.green { background-color: #10b981; }
+.mini-bar.yellow { background-color: #f59e0b; }
 
 .mini-label {
   font-size: 9px;
   color: #64748b;
+  text-align: center;
 }
 
-/* ✅ ANIMAÇÃO DE ALERTA CRÍTICO FORTE (PISCADA RÁPIDA E INTENSA) */
-@keyframes pulse-red-strong {
-  0% {
-    transform: scale(1);
-    background-color: rgba(239, 68, 68, 0.12);
-    border-left-color: #ef4444;
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+/* === ANIMAÇÕES === */
+
+/* Animação AGRESSIVA para Críticos */
+@keyframes smoothPulseCompact {
+  0% { 
+    border-color: rgba(255, 11, 120, 0.3); 
+    box-shadow: 0 0 0 rgba(0,0,0,0); 
   }
-  40% {
-    transform: scale(1.04); /* Pulsa crescendo */
-    background-color: rgba(239, 68, 68, 0.35); /* Fundo bem vermelho */
-    border-left-color: #fca5a5;
-    box-shadow: 0 0 18px 4px rgba(239, 68, 68, 0.9); /* Brilho externo forte */
+  50% { 
+    /* Borda totalmente sólida (1.0) e brilho maior (20px) e mais forte (0.6) */
+    border-color: rgba(255, 11, 120, 1.0); 
+    box-shadow: 0 0 20px rgba(255, 11, 120, 0.6); 
   }
-  100% {
-    transform: scale(1);
-    background-color: rgba(239, 68, 68, 0.12);
-    border-left-color: #ef4444;
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  100% { 
+    border-color: rgba(255, 11, 120, 0.3); 
+    box-shadow: 0 0 0 rgba(0,0,0,0); 
   }
 }
 
 .alert-card-carousel.critico {
-  /* Animação rápida (0.7s) e infinita */
-  animation: pulse-red-strong 0.7s infinite ease-in-out;
-  z-index: 10; /* Garante que o efeito de escala fique acima dos outros */
+  /* Tempo reduzido de 2.5s para 0.8s para piscar rápido */
+  animation: smoothPulseCompact 0.8s infinite ease-in-out;
+  z-index: 1; 
 }
+

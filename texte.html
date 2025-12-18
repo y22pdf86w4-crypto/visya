@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visya Alert Feed</title>
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            
+            /* Cores Semânticas Neon */
+            --color-critical: #ff0b78;  /* Rosa Neon */
+            --color-warning: #f59e0b;   /* Laranja/Amarelo */
+            --color-success: #10b981;   /* Verde Esmeralda */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* Container da Lista (Coluna Lateral) */
+        .feed-container {
+            width: 100%;
+            max-width: 400px; /* Largura similar à imagem de referência */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feed-header {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        /* --- CARD BASE (Modelo Único) --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Barra Lateral Colorida */
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            /* A cor é definida nas variações abaixo */
+        }
+
+        /* --- HEADER DO CARD --- */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+
+        .card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        /* Badge do Canto Superior */
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.05em;
+            border: 1px solid currentColor;
+            background: rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        /* --- CONTEÚDO DO CARD --- */
+        .card-metric {
+            font-size: 2rem; /* Tamanho grande como na imagem */
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .card-description {
+            color: #cbd5e1; /* Texto claro para leitura */
+            font-size: 0.875rem;
+            line-height: 1.5;
+            /* Garante que o texto não quebre o layout */
+            word-wrap: break-word; 
+        }
+
+        /* --- FOOTER DO CARD --- */
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto; /* Empurra para baixo se houver espaço */
+            padding-top: 0.5rem;
+        }
+
+        .footer-tag {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* --- VARIAÇÕES DE COR --- */
+        
+        /* 1. CRÍTICO (Rosa/Neon) */
+        .card.critical {
+            background: linear-gradient(180deg, rgba(255, 11, 120, 0.05) 0%, var(--bg-card) 100%);
+        }
+        .card.critical::before { background: var(--color-critical); }
+        .card.critical .status-badge { color: var(--color-critical); box-shadow: 0 0 10px rgba(255, 11, 120, 0.3); }
+        .card.critical .card-metric { color: var(--text-primary); text-shadow: 0 0 20px rgba(255, 11, 120, 0.6); }
+        
+        /* 2. WARNING (Amarelo) */
+        .card.warning {
+            background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, var(--bg-card) 100%);
+        }
+        .card.warning::before { background: var(--color-warning); }
+        .card.warning .status-badge { color: var(--color-warning); }
+        .card.warning .card-metric { color: var(--text-primary); }
+
+        /* 3. SUCCESS (Verde) */
+        .card.success {
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--bg-card) 100%);
+        }
+        .card.success::before { background: var(--color-success); }
+        .card.success .status-badge { color: var(--color-success); }
+        .card.success .card-metric { color: var(--text-primary); }
+
+        /* --- ANIMAÇÃO "NO HORROR" --- 
+           Um efeito de "respiração" na borda e sombra, suave e profissional.
+        */
+        @keyframes smoothPulse {
+            0% {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 11, 120, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(255, 11, 120, 0.4);
+                border-color: rgba(255, 11, 120, 0.8);
+            }
+            100% {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 11, 120, 0.3);
+            }
+        }
+
+        .card.critical.animated {
+            animation: smoothPulse 2.5s infinite ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="feed-container">
+        <div class="feed-header">Destaques & Alertas</div>
+
+        <!-- CARD 1: CRÍTICO (Adaptado para o modelo padrão) -->
+        <div class="card critical animated">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-title">São Mateus</div>
+                    <div class="card-subtitle">Regional Norte • Gerente Local</div>
+                </div>
+                <div class="status-badge">Crítico</div>
+            </div>
+
+            <div class="card-metric" style="color: var(--color-critical)">
+                -12.5%
+            </div>
+
+            <div class="card-description">
+                Unidade com ROI acumulado negativo e Fluxo de Caixa mensal de -R$ 15.000. 
+                <strong>Gatilho de parada acionado:</strong> Churn > 30% nos últimos 3 meses.
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-tag">⚠️ Risco Financeiro</div>
+            </div>
+        </div>
+
+        <!-- CARD 2: WARNING -->
+        <div class="card warning">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-title">Graciela - Risco</div>
+                    <div class="card-subtitle">Análise de carteira / Consultora</div>
+                </div>
+                <div class="status-badge">Atenção</div>
+            </div>
+
+            <div class="card-metric" style="color: var(--color-warning)">
+                25.2%
+            </div>
+
+            <div class="card-description">
+                Graciela tem 25.2% da base em risco (31/123 clientes ativos). 
+                Priorize visitas urgentes para esta carteira na próxima semana.
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-tag">📊 Análise de Risco</div>
+            </div>
+        </div>
+
+        <!-- CARD 3: WARNING (Texto Longo para Teste) -->
+        <div class="card warning">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-title">Paulo Modesto</div>
+                    <div class="card-subtitle">Consultor Comercial</div>
+                </div>
+                <div class="status-badge">Atenção</div>
+            </div>
+
+            <div class="card-metric" style="color: var(--color-warning)">
+                16.8%
+            </div>
+
+            <div class="card-description">
+                Paulo Modesto está com 16.8% em risco (21/125). 
+                Direcione ações imediatas. O tempo de resposta está abaixo da média da regional.
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-tag">📊 Análise de Risco</div>
+            </div>
+        </div>
+
+        <!-- CARD 4: SUCCESS -->
+        <div class="card success">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-title">Meta Global</div>
+                    <div class="card-subtitle">Cobertura de atividades</div>
+                </div>
+                <div class="status-badge">Atingida</div>
+            </div>
+
+            <div class="card-metric" style="color: var(--color-success)">
+                107.4%
+            </div>
+
+            <div class="card-description">
+                Você está em 709/660 atividades planejadas. Parabéns! 
+                Meta superada e tendência positiva para o fechamento do Q4.
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-tag">🎯 Metas</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
