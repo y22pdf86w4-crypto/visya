@@ -43,7 +43,7 @@ export default function Login() {
 
     try {
       const res = await api.post(
-      "https://api.salesplan.com.br/api/linhagro/login",
+      "https://api.salesplan.com.br/api/login",
       { usuario, senha }
     );
       const { token, usuario: userNome } = res.data;
