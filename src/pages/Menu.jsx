@@ -7,6 +7,7 @@ import visyaLogo from "../assets/logovisya.png";
 import dualforceLogo from "../assets/logo-dualforce.png";
 import linhagroLogo from "../assets/logo-linhagro.png";
 
+
 export default function Menu() {
   const navigate = useNavigate();
   const usuario = localStorage.getItem("userdualforce") || "Usuário";
@@ -14,6 +15,7 @@ export default function Menu() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [dashboards, setDashboards] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   const todosOsDashboards = [
     {
@@ -46,6 +48,7 @@ export default function Menu() {
     },
   ];
 
+
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => {
@@ -58,6 +61,7 @@ export default function Menu() {
     return () => clearTimeout(timer);
   }, [userRole]);
 
+
   function handleLogout() {
     if (confirm("Tem certeza que deseja sair?")) {
       localStorage.removeItem("tokendualforce");
@@ -67,9 +71,11 @@ export default function Menu() {
     }
   }
 
+
   function handleOpenDashboard(dashboard) {
     navigate(dashboard.rota);
   }
+
 
   function getRoleColor() {
     const colors = {
@@ -80,11 +86,13 @@ export default function Menu() {
     return colors[userRole] || "#22c55e";
   }
 
+
   function getRoleLabel() {
     if (userRole === "admin") return "Administrador";
     if (userRole === "gestor") return "Gestor";
     return "";
   }
+
 
   function getDashboardLogo(chave) {
     if (chave === "dualforce") return dualforceLogo;
@@ -92,8 +100,48 @@ export default function Menu() {
     return null;
   }
 
+  // Gerar partículas aleatórias
+  function generateParticles() {
+    const particles = [];
+    for (let i = 0; i < 15; i++) {
+      particles.push({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 20,
+      });
+    }
+    return particles;
+  }
+
+  const particles = generateParticles();
+
+
   return (
     <div className="home-page">
+      {/* FUNDO ANIMADO */}
+      <div className="animated-bg"></div>
+      
+      {/* GRID ANIMADO */}
+      <div className="grid-bg"></div>
+      
+      {/* ORBS BRILHANTES */}
+      <div className="glow-orb orb-1"></div>
+      <div className="glow-orb orb-2"></div>
+      
+      {/* PARTÍCULAS FLUTUANTES */}
+      <div className="particles-container">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="particle"
+            style={{
+              left: `${particle.left}%`,
+              animationDelay: `${particle.delay}s`,
+            }}
+          ></div>
+        ))}
+      </div>
+
       {/* HEADER */}
       <header className="header">
         <div className="header-content">
@@ -110,17 +158,20 @@ export default function Menu() {
             </div>
           </div>
 
+
           {/* Navegação simplificada */}
           <nav className="nav-menu">
             <span className="nav-link active">Dashboards</span>
           </nav>
         </div>
 
+
         <div className="header-actions">
           <button className="btn-icon" title="Notificações">
             <Bell size={18} />
             <span className="notification-badge">3</span>
           </button>
+
 
           {/* Bloco usuário / função */}
           <div className="user-profile-header">
@@ -141,6 +192,7 @@ export default function Menu() {
             </div>
           </div>
 
+
           <button
             className="btn-icon"
             onClick={() => setProfileOpen(!profileOpen)}
@@ -149,12 +201,14 @@ export default function Menu() {
             ⚙️
           </button>
 
+
           <button className="btn-logout" onClick={handleLogout}>
             <LogOut size={14} style={{ marginRight: "4px" }} />
             Sair
           </button>
         </div>
       </header>
+
 
       {/* DROPDOWN PERFIL */}
       {profileOpen && (
@@ -188,6 +242,7 @@ export default function Menu() {
         </div>
       )}
 
+
       {/* HERO MAIS ENXUTO */}
       <section className="hero">
         <div className="hero-content">
@@ -200,6 +255,7 @@ export default function Menu() {
         </div>
       </section>
 
+
       {/* DASHBOARDS */}
       <section className="dashboards-section">
         <div className="dashboards-header">
@@ -209,6 +265,7 @@ export default function Menu() {
             {dashboards.length !== 1 ? "s" : ""}.
           </p>
         </div>
+
 
         <div className="dashboards-grid">
           {loading ? (
@@ -238,6 +295,7 @@ export default function Menu() {
                   )}
                 </div>
 
+
                 <div className="card-header">
                   <h3 className="card-title">{dashboard.title}</h3>
                   <span className="card-category">
@@ -245,9 +303,11 @@ export default function Menu() {
                   </span>
                 </div>
 
+
                 <p className="card-description">
                   {dashboard.description}
                 </p>
+
 
                 <div className="card-meta">
                   <div className="meta-item">
@@ -264,6 +324,7 @@ export default function Menu() {
                   </div>
                 </div>
 
+
                 <div className="card-tags">
                   {dashboard.tags?.map((tag, idx) => (
                     <span key={idx} className="tag">
@@ -271,6 +332,7 @@ export default function Menu() {
                     </span>
                   ))}
                 </div>
+
 
                 <div className="card-actions">
                   <button
@@ -299,6 +361,7 @@ export default function Menu() {
           )}
         </div>
       </section>
+
 
       <footer className="footer">
         <p>© 2025 Visya. Todos os direitos reservados.</p>
